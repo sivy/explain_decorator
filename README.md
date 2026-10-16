@@ -1,5 +1,7 @@
 Rdoc on Github Pages: https://sivy.github.io/explain_decorator/README_md.html
 
+Source: https://github.com/sivy/explain_decorator
+
 ## Background
 
 When implementing formulas and calculations in code, it can be useful for auditing or 
