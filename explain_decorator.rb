@@ -46,14 +46,21 @@ module ExplainDecorator
     # the old method.
     
     define_method(func_name) do |*args, **kwargs|
-      # get
+      # if we're not asking for the explanation return early
+      if ! kwargs.include?(:explain) && ! kwargs.include?(:explain_with_result) then
+        return send(new_name_for_old_function, *args, **kwargs)
+      end
+      # start collecting context data
       m = method(new_name_for_old_function)
+      
       # get method params and values for context
       parameters = m.parameters.map {|prm| prm[1] }
       params = {}
       parameters.each_with_index do |prm, i|
         params[prm] = args[i]
       end
+
+      # get information on where the method is
       source_location = m.source_location.join(":")
       owning_class = m.receiver.class
 
@@ -83,9 +90,7 @@ module ExplainDecorator
           obj: ObjWrap.new(self),
           args: args,
         })
-      else
-        # This is the same as `self.send`.  `self` here is an instance of your extended class.  As we had TWO references to the original method, we still have one left over, so we can call it here.
-        send(new_name_for_old_function, *args, **kwargs)
+
       end
     end
   end
