@@ -22,15 +22,25 @@ In the class, to add an explanation for a method:
 class Calculator
   extend ExplainDecorator
 
-  def calculate_tax(x, y)
-    x+y
+  def initialize(rate)
+    @rate = rate
   end
+
+  # Calculate the tax on allowed_amount based on `@rate`
+  def calculate_tax(allowed_amount)
+    allowed_amount * @rate
+  end
+
   # now wrap to support explanation
   explanation(:calculate, <<~EXP
-    calculate adds two integers
-    x + y
-    <%= x %> + <%= y %>
+    Tax Calculation
+
+    amount * @rate
+    <%= allowed_amount %> * <%= obj.rate %>
     <% if result %>Result => <%= result %><% end %>
+
+    (<%= source_location %> in <%= source_class %>)
+  EXP
   EXP
   )
 end
@@ -45,8 +55,8 @@ above:
 Simply returns the usual result:
 
 ```ruby
-irb(main):001> Calculator.new.calculate(1, 2)
-3
+irb(main):001> Calculator.new(0.25).calculate_tax(1000)
+250.0
 ```
 
 ### Calling the method with `explain:` 
@@ -54,10 +64,13 @@ irb(main):001> Calculator.new.calculate(1, 2)
 Returns the explanation message based on the template:
 
 ```ruby
-irb(main):001> Calculator.new.calculate(1, 2, explain: true)
-calculate adds two integers
-x + y
-1 + 2
+irb(main):001> Calculator.new(0.25).calculate_tax(1000, explain: true)
+Tax Calculation
+
+amount_allowed * @rate
+1000 * 0.25
+
+(main.rb:17 in Calculator)
 ```
 
 ### Calling the method with `explain_with_result`
@@ -65,11 +78,14 @@ x + y
 Calls the method as usual, stores the result, and returns the explanation with the result (rendered through the template):
 
 ```ruby
-irb(main):001> Calculator.new.calculate(1, 2, explain_with_result: true)
-calculate adds two integers
-x + y
-1 + 2
-Result => 3
+irb(main):001> Calculator.new(0.25).calculate_tax(1000, explain_with_result: true)
+Tax Calculation
+
+allowed_amount * @rate
+1000 * 0.25
+Result => 250.0
+
+(main.rb:17 in Calculator)
 ```
 
 ## Template Context

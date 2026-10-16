@@ -33,18 +33,9 @@ module ExplainDecorator
   # This is the function that will DO the decoration: given a function, it'll extend it to 
   # have 'explanation' functionality. 
   def explanation(func_name, template)
-    # We extend the old function by 'replacing' it - but to do that, we need to preserve
-    # the old one so we can still call it from the snazzy new function.
-    # puts params
     new_name_for_old_function = "#{func_name}_old".to_sym
-    # This function, alias_method(), does what it says on the tin - allows us to call either
-    # function name to do the same thing.  So now we have TWO references to the OLD function.
-    # Note that alias_method is NOT a built-in function, but is a method of Class - that's one
-    # reason we're doing this from a module.
     alias_method(new_name_for_old_function, func_name)
-    # Here we're writing a new method with the name func_name.  Yes, that means we're REPLACING
-    # the old method.
-    
+
     define_method(func_name) do |*args, **kwargs|
       # if we're not asking for the explanation return early
       if ! kwargs.include?(:explain) && ! kwargs.include?(:explain_with_result) then
@@ -71,7 +62,7 @@ module ExplainDecorator
         'result': nil
       }
 
-        # get result
+      # get result
       if kwargs.delete(:explain_with_result)
         ctx.merge!(kwargs)
         result = send(new_name_for_old_function, *args, **kwargs)

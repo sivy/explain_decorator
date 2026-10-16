@@ -6,10 +6,6 @@ class Calculator
   extend ExplainDecorator
 
   def initialize(rate)
-    if rate > 1
-      rate = rate/100
-    end
-
     @rate = rate
   end
 
@@ -20,15 +16,13 @@ class Calculator
 
   # now wrap calculate_tax to support explanation
   explanation(:calculate_tax, <<~EXP
-  ------
   Tax Calculation
 
-  amount * @rate
+  allowed_amount * @rate
   <%= allowed_amount %> * <%= obj.rate %>
   <% if result %>Result => <%= result %><% end %>
 
   (<%= source_location %> in <%= source_class %>)
-  ------
   EXP
   )
 end
