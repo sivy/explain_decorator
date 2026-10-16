@@ -1,5 +1,7 @@
 require_relative 'explain_decorator'
 
+##
+# Sample class using `ExplainDecorator`
 class Calculator
   extend ExplainDecorator
 
@@ -11,7 +13,7 @@ class Calculator
     @rate = rate
   end
 
-  # calculate
+  # Calculate the tax on allowed_amount based on `@rate`
   def calculate_tax(allowed_amount)
     allowed_amount * @rate
   end
