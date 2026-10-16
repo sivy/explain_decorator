@@ -1,3 +1,4 @@
+Rdoc on Github Pages: https://sivy.github.io/explain_decorator/README_md.html
 
 ## Background
 
