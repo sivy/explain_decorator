@@ -1,54 +1,24 @@
 require 'erb'
 
 ##
-# Background
-# ----------
-#
-# When implementing formulas and calculations in code, it can be useful for auditing or 
-# troubleshooting to see the exact formula implemented alongside the actual arguments used 
-# in a given call.
-#
-# `ExplainDecorator`` provides a method `explanation` that takes the method to be explained
-# and en ERB template, and adds to posisble keyword args to the wrapped method: `explain:` 
-# and `explain_with_result`
-#
-# Usage
-# -----
-# Use `extend ExplainDecorator` to add the `explanation` method to your class.
-# 
-# In the class, to add an explanation for a method:
-# 
-# ```
-# class Calculator
-#   def calculate(x, y)
-#     x+y
-#   end
-#   explantation(:calculate, <<~EXP
-#     calculate adds two integers
-#     x + y
-#     <%= x %> + <%= y %>
-#   EXP
-#   )
-# end
-# ```
-#
-# When calling the method, adding `expain: true` to the method call will, instead of the method's 
-# expected result, a string based on the template string provided in `explanation`. In the example 
-# above, calling `Calculator.new.calculate(1, 2, explain: true)` will return:
-# 
-#     calculate adds two integers
-#     x + y
-#     1 + 2
-#
-#
+# Implements the `explanation` decorator method 
 module ExplainDecorator
   ##
-  # lightweight wrapper to expose @variables to the ERB template
+  # Lightweight wrapper to expose @variables to the ERB template
+  #
   class ObjWrap
+    ##
+    #  The object to wrap
     def initialize(inst)
       @inst = inst
     end
 
+    ##
+    # Uses `Object#method_missing` -= variable names will not be in the methods list so we 
+    # know to pass them to `instance_variable_get` tro get a value.
+    #
+    # For example, to display @varname in the explanation template, use `obj.varname` 
+    # (without the `@` unfortunately).
     def method_missing(attr)
       @inst.instance_variable_get("@#{attr}")
     end
@@ -57,9 +27,12 @@ module ExplainDecorator
 
   ##
   # `explanation` monkey-patches wrapped methods so we can ask them to explain themselves
+  # This code is heavily adapted from this SO post about python-style decorators in Ruby
+  # https://stackoverflow.com/a/1893309
+  #
+  # This is the function that will DO the decoration: given a function, it'll extend it to 
+  # have 'explanation' functionality. 
   def explanation(func_name, template)
-    # This is the function that will DO the decoration: given a function, it'll extend it to 
-    # have 'explanation' functionality.
     # We extend the old function by 'replacing' it - but to do that, we need to preserve
     # the old one so we can still call it from the snazzy new function.
     # puts params
@@ -73,13 +46,8 @@ module ExplainDecorator
     # the old method.
     
     define_method(func_name) do |*args, **kwargs|
+      # get
       m = method(new_name_for_old_function)
-      # p "#{new_name_for_old_function} methods: #{m.methods}"
-      # p "#{new_name_for_old_function} receiver: #{m.receiver}"
-      # p "#{new_name_for_old_function} inspect: #{m.inspect}"
-      # p "#{new_name_for_old_function} source_location #{m.source_location}"
-      # p "#{new_name_for_old_function} parameters #{m.parameters}"
-
       # get method params and values for context
       parameters = m.parameters.map {|prm| prm[1] }
       params = {}
@@ -87,9 +55,11 @@ module ExplainDecorator
         params[prm] = args[i]
       end
       source_location = m.source_location.join(":")
+      owning_class = m.receiver.class
 
       ctx = {
-        **params, 
+        **params,
+        'source_class': owning_class,
         'source_location': source_location,
         'result': nil
       }

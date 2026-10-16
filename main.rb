@@ -16,15 +16,16 @@ class Calculator
     allowed_amount * @rate
   end
 
+  # now wrap calculate_tax to support explanation
   explanation(:calculate_tax, <<~EXP
   ------
   Tax Calculation
 
   amount * @rate
   <%= allowed_amount %> * <%= obj.rate %>
-  <% if result %>=> <%= result %><% end %>
+  <% if result %>Result => <%= result %><% end %>
 
-  (<%= source_location %>)
+  (<%= source_location %> in <%= source_class %>)
   ------
   EXP
   )

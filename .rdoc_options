@@ -1,1 +1,7 @@
+title: ExplainDecorator Demo
+main: README.md
 markup: markdown
+exclude:
+- Makefile
+- Dockerfile
+- docs
