@@ -1,5 +1,5 @@
 title: ExplainDecorator Demo
-main: README.md
+main_page: README.md
 markup: markdown
 exclude:
 - Makefile

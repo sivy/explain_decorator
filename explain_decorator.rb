@@ -78,7 +78,6 @@ module ExplainDecorator
   
       elsif kwargs.delete(:explain)
         ctx.merge!(kwargs)
-        puts "explaining with #{kwargs}"
         ERB.new(template).result_with_hash({
           **ctx,
           obj: ObjWrap.new(self),
