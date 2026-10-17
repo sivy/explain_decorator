@@ -14,7 +14,7 @@ module ExplainDecorator
     end
 
     ##
-    # Uses `Object#method_missing` -= variable names will not be in the methods list so we 
+    # Uses `Object#method_missing` - variable names will not be in the methods list so we 
     # know to pass them to `instance_variable_get` tro get a value.
     #
     # For example, to display @varname in the explanation template, use `obj.varname` 
