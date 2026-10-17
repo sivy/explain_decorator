@@ -21,4 +21,4 @@ jobs:
         run: gem install rspec --no-document
 
       - name: Run tests
-        run: rspec explain_decorator_spec.rb
+        run: rspec

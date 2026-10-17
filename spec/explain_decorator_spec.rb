@@ -1,4 +1,4 @@
-require_relative 'explain_decorator'
+require_relative '../explain_decorator'
 
 RSpec.describe ExplainDecorator do
 
