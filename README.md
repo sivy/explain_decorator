@@ -52,7 +52,7 @@ above:
 
 Simply returns the usual result:
 
-```ruby
+```
 irb(main):001> Calculator.new(0.25).calculate_tax(1000)
 250.0
 ```
@@ -61,7 +61,7 @@ irb(main):001> Calculator.new(0.25).calculate_tax(1000)
 
 Returns the explanation message based on the template:
 
-```ruby
+```
 irb(main):001> Calculator.new(0.25).calculate_tax(1000, explain: true)
 Tax Calculation
 
@@ -75,7 +75,7 @@ amount_allowed * @rate
 
 Calls the method as usual, stores the result, and returns the explanation with the result (rendered through the template):
 
-```ruby
+```
 irb(main):001> Calculator.new(0.25).calculate_tax(1000, explain_with_result: true)
 Tax Calculation
 
