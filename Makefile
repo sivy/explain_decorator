@@ -20,3 +20,6 @@ irb:
 
 docs:
 	$(RUNCMD) rdoc
+
+test:
+	$(RUNCMD) rspec $(args)

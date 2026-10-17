@@ -46,8 +46,7 @@ class Calculator
 end
 ```
 
-When calling the method, adding `expain: true` to the method call will, instead of the method's 
-expected result, a string based on the template string provided in `explanation`. Using the example 
+When calling the method, adding `expain: true` to the method call will, instead of the method's expected result, a string based on the template string provided in `explanation`. Using the example 
 above:
 
 ### Calling the method without asking for the explanation

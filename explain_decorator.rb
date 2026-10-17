@@ -33,56 +33,43 @@ module ExplainDecorator
   # This is the function that will DO the decoration: given a function, it'll extend it to 
   # have 'explanation' functionality. 
   def explanation(func_name, template)
-    new_name_for_old_function = "#{func_name}_old".to_sym
-    alias_method(new_name_for_old_function, func_name)
+    original = "#{func_name}_old".to_sym
+    alias_method(original, func_name)
+    decorator = self
 
     define_method(func_name) do |*args, **kwargs|
-      # if we're not asking for the explanation return early
-      if ! kwargs.include?(:explain) && ! kwargs.include?(:explain_with_result) then
-        return send(new_name_for_old_function, *args, **kwargs)
-      end
-      # start collecting context data
-      m = method(new_name_for_old_function)
-      
-      # get method params and values for context
-      parameters = m.parameters.map {|prm| prm[1] }
-      params = {}
-      parameters.each_with_index do |prm, i|
-        params[prm] = args[i]
+      explain = kwargs.delete(:explain)
+      explain_with_result = kwargs.delete(:explain_with_result)
+
+      # if we're not asking for the explanation, behave exactly like the original method
+      unless explain || explain_with_result
+        next send(original, *args, **kwargs)
       end
 
-      # get information on where the method is
-      source_location = m.source_location.join(":")
-      owning_class = m.receiver.class
+      ctx = decorator.send(:build_context, method(original), args, kwargs)
+      ctx[:result] = send(original, *args, **kwargs) if explain_with_result
 
-      ctx = {
-        **params,
-        'source_class': owning_class,
-        'source_location': source_location,
-        'result': nil
-      }
-
-      # get result
-      if kwargs.delete(:explain_with_result)
-        ctx.merge!(kwargs)
-        result = send(new_name_for_old_function, *args, **kwargs)
-        ctx['result'] = result
-        
-        ERB.new(template).result_with_hash({
-          **ctx,
-          obj: ObjWrap.new(self),
-          args: args,
-        })
-  
-      elsif kwargs.delete(:explain)
-        ctx.merge!(kwargs)
-        ERB.new(template).result_with_hash({
-          **ctx,
-          obj: ObjWrap.new(self),
-          args: args,
-        })
-
-      end
+      ERB.new(template).result_with_hash({
+        **ctx,
+        obj: ObjWrap.new(self),
+        args: args,
+      })
     end
+  end
+
+  private
+
+  ##
+  # Collects the method's params and values, plus where it lives, for the ERB template
+  def build_context(m, args, kwargs)
+    params = m.parameters.map { |prm| prm[1] }.zip(args).to_h
+
+    {
+      **params,
+      **kwargs,
+      source_class: m.receiver.class,
+      source_location: m.source_location.join(":"),
+      result: nil
+    }
   end
 end
