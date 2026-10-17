@@ -1,0 +1,24 @@
+name: Run Spec Tests
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+
+      - name: Install RSpec
+        run: gem install rspec --no-document
+
+      - name: Run tests
+        run: rspec
