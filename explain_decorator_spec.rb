@@ -25,7 +25,7 @@ RSpec.describe ExplainDecorator do
       x + y
     end
     explanation(:test_named_ary_args, <<~EXP
-    (<%= x %> + <%= y %>)
+    (<%= x %> + <%= y %>) = <%= result %>
     EXP
     )
 
