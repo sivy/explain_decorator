@@ -41,7 +41,6 @@ class Calculator
 
     (<%= source_location %> in <%= source_class %>)
   EXP
-  EXP
   )
 end
 ```
