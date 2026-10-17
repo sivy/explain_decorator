@@ -98,3 +98,7 @@ The `explanation` decorator method will run your ERB template with a context con
 - Optionally, the result of the actual call as `result`
 - The owning class as `source_class`
 - The file location as `source_location`
+
+## AI Statement
+
+I hate what "AI" is doing to our industry and our culture. But I also used Claude to work out a couple of things in this sample code, so I'm also a hypocrit. Sorry.
