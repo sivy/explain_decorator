@@ -47,10 +47,8 @@ module ExplainDecorator
       end
 
       ctx = decorator.send(:build_context, method(original), args, kwargs)
-      if explain_with_result
-        ctx[:show_result] = true
-        ctx[:result] = send(original, *args, **kwargs) 
-      end
+      ctx[:show_result] = explain_with_result
+      ctx[:result] = send(original, *args, **kwargs) 
 
       ERB.new(template).result_with_hash({
         **ctx,
