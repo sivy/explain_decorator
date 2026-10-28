@@ -19,6 +19,8 @@ Use `extend ExplainDecorator` to add the `explanation` method to your class.
 In the class, to add an explanation for a method:
 
 ```ruby
+require_relative 'explain_decorator'
+
 class Calculator
   extend ExplainDecorator
 
@@ -32,12 +34,12 @@ class Calculator
   end
 
   # now wrap to support explanation
-  explanation(:calculate, <<~EXP
+  explanation(:calculate_tax, <<~EXP
     Tax Calculation
 
     amount * @rate
     <%= allowed_amount %> * <%= obj.rate %>
-    <% if result %>Result => <%= result %><% end %>
+    <% if show_result %>Result => <%= result %><% end %>
 
     (<%= source_location %> in <%= source_class %>)
   EXP
